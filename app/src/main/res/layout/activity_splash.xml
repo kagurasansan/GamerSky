@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="110dp"
+        android:src="@mipmap/ic_title"
+        android:layout_above="@+id/tv_title"
+        android:layout_centerHorizontal="true"
+        android:layout_height="35dp"/>
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:text="游 戏 玩 家 随 身 伴 侣"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

@@ -1,0 +1,1 @@
+include ':app', ':main', ':findgame', ':findstrategy', ':mine', ':base'
