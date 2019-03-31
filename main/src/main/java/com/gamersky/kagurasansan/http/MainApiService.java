@@ -1,6 +1,7 @@
 package com.gamersky.kagurasansan.http;
 
 import com.gamersky.kagurasansan.data.bean.ChannelListData;
+import com.gamersky.kagurasansan.data.bean.GameInfoBean;
 
 import io.reactivex.Flowable;
 import retrofit2.http.Field;
@@ -21,5 +22,11 @@ public interface MainApiService {
                                              @Field("elementsCountPerPage") String elementsCountPerPage,
                                              @Field("parentNodeId") String parentNodeId,
                                              @Field("type") String type);
+    @FormUrlEncoded
+    @POST("v4/getGame")
+    Flowable<GameInfoBean> getGameData(@Field("gameId") String gameId,
+                                       @Field("gameModeFieldNames") String gameModeFieldNames,
+                                       @Field("gameRelatedFieldNames")String gameRelatedFieldNames,
+                                       @Field("gameTagsCount") int gameTagsCount);
 
 }

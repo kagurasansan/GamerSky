@@ -2,6 +2,7 @@ package com.gamersky.kagurasansan.ui.navigator;
 
 import com.gamersky.kagurasansan.base.base.BaseNavigator;
 import com.gamersky.kagurasansan.data.bean.ChannelListData;
+import com.gamersky.kagurasansan.data.bean.GameInfoBean;
 
 /**
  * @auther kagurasansan
@@ -11,4 +12,6 @@ import com.gamersky.kagurasansan.data.bean.ChannelListData;
 public interface MainNavigator extends BaseNavigator {
 
     void onSuccess(ChannelListData dataBean);
+
+    void onGameSuccess(int pos,GameInfoBean dataBean);
 }

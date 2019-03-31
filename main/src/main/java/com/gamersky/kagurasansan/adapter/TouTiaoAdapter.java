@@ -8,8 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.gamersky.kagurasansan.data.bean.ChannelListData;
+import com.gamersky.kagurasansan.data.bean.GameInfoBean;
 import com.gamersky.kagurasansan.main.R;
 import com.gamersky.kagurasansan.main.databinding.MainItemBannerBinding;
 import com.gamersky.kagurasansan.main.databinding.MainItemLoadBinding;
@@ -43,7 +45,11 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
     private boolean hasMore = false;   //是否有更多数据
     private boolean fadeTips = false;  //是否隐藏
     private List<ChannelListData.ResultBean> mData = new ArrayList<>();
+    private getGameInterface mGetGameInterface;
 
+    public void setGetGameInterface(getGameInterface getGameInterface) {
+        mGetGameInterface = getGameInterface;
+    }
 
     public void setData(List<ChannelListData.ResultBean> data) {
         mData.clear();
@@ -98,6 +104,11 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i,List payloads) {
         if(getItemViewType(i) == HUANDENG){
             ((BannerViewHolder)viewHolder).onBind(mData.get(i).childElements);
         }else if(getItemViewType(i) == NEWS){
@@ -107,7 +118,7 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
         }else if(getItemViewType(i) == ZHUANTI){
             ((ZhuanTiViewHolder)viewHolder).onBind(mData.get(i));
         }else if(getItemViewType(i) == TUIJIANYOUXI){
-            ((TuiJianViewHolder)viewHolder).onBind(mData.get(i));
+            ((TuiJianViewHolder)viewHolder).onBind(i,mData.get(i),payloads);
         }else if(getItemViewType(i) == LOAD){
             ((LoadViewHolder)viewHolder).onBind();
         }
@@ -265,8 +276,27 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
             super(itemView.getRoot());
             root = itemView;
         }
-        public void onBind(ChannelListData.ResultBean data){
+        public void onBind(int pos,ChannelListData.ResultBean data,List payloads){
+            if(!payloads.isEmpty()){//payloads为空 即不是调用notifyItemChanged(position,payloads)方法执行的
+                //在这里进行初始化item全部控件
+                GameInfoBean gameInfoBean= (GameInfoBean) payloads.get(0);// 刷新哪个部分 标志位
+                int count = 0;
+                if(gameInfoBean != null && gameInfoBean.result != null){
+                    count = gameInfoBean.result.gameTag.size() >= 3 ? 3 : gameInfoBean.result.gameTag.size();
+                }
+                root.llTag.removeAllViews();
+                for(int i = 0;i < count;i++ ){
+                    TextView textView = new TextView(mContext);
+                    textView.setTextSize(9);
+
+                    textView.setText(gameInfoBean.result.gameTag.get(i));
+                    root.llTag.addView(textView);
+                }
+
+                root.setGameinfo(gameInfoBean);
+            }
             root.setData(data);
+            mGetGameInterface.getGameData(pos, String.valueOf(data.contentId));
         }
     }
 
@@ -288,8 +318,16 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
     }
 
 
+    public void setItemData(int pos, GameInfoBean data){
+        notifyItemChanged(pos,data);
+    }
+
     //是否正在刷新
     public void setFadeTips(boolean fadeTips) {
         this.fadeTips = fadeTips;
+    }
+
+    public interface getGameInterface{
+        void getGameData(int pos,String gameId);
     }
 }

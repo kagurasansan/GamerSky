@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.gamersky.kagurasansan.adapter.TouTiaoAdapter;
 import com.gamersky.kagurasansan.base.base.BaseFragment;
 import com.gamersky.kagurasansan.data.bean.ChannelListData;
+import com.gamersky.kagurasansan.data.bean.GameInfoBean;
 import com.gamersky.kagurasansan.main.databinding.MainFragmentToutiaoBinding;
 import com.gamersky.kagurasansan.ui.navigator.MainNavigator;
 import com.gamersky.kagurasansan.viewmodel.MainViewModel;
@@ -45,7 +46,6 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
         //设置圆圈进度条的背景颜色
         bindingView.sr.setColorSchemeResources(R.color.main_red);
 
-        bindingView.sr.setRefreshing(true);
         bindingView.rcData.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -63,6 +63,12 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
+            }
+        });
+        mTouTiaoAdapter.setGetGameInterface(new TouTiaoAdapter.getGameInterface() {
+            @Override
+            public void getGameData(int pos,String gameId) {
+                mMainViewModel.getGameData(pos,gameId);
             }
         });
     }
@@ -93,6 +99,11 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
             mTouTiaoAdapter.setFadeTips(false);
         }
         mPage ++;
+    }
+
+    @Override
+    public void onGameSuccess(int pos,GameInfoBean dataBean) {
+        mTouTiaoAdapter.setItemData(pos,dataBean);
     }
 
     @Override

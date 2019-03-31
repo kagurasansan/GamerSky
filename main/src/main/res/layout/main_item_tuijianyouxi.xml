@@ -6,6 +6,10 @@
         <variable
             name="data"
             type="com.gamersky.kagurasansan.data.bean.ChannelListData.ResultBean"/>
+
+        <variable
+            name="gameinfo"
+            type="com.gamersky.kagurasansan.data.bean.GameInfoBean"/>
     </data>
 
     <RelativeLayout
@@ -39,7 +43,7 @@
           <TextView
               android:id="@+id/tv_game_title"
               android:layout_width="wrap_content"
-              android:text="雨中希望"
+              android:text="@{gameinfo.result.Title}"
               android:layout_toRightOf="@+id/iv_game_pic"
               android:layout_marginTop="10dp"
               android:layout_marginLeft="10dp"
@@ -52,6 +56,7 @@
               android:layout_marginTop="10dp"
               android:orientation="horizontal"
               android:layout_marginRight="10dp"
+              android:layout_toLeftOf="@+id/ll_count"
               android:layout_below="@+id/tv_game_title"
               android:layout_toRightOf="@+id/iv_game_pic"
               android:layout_height="wrap_content">
@@ -74,6 +79,7 @@
               android:drawableLeft="@mipmap/comment_list_release"
               android:layout_height="wrap_content"/>
           <RelativeLayout
+              android:id="@+id/ll_count"
               android:layout_width="60dp"
               android:layout_alignParentRight="true"
               android:layout_margin="15dp"
@@ -81,16 +87,16 @@
               android:layout_height="match_parent">
               <TextView
                   android:layout_width="wrap_content"
-                  android:text="3.7"
+                  android:text="@{gameinfo.result.gsScore}"
                   android:layout_centerHorizontal="true"
                   android:textColor="@color/main_green"
                   android:textStyle="bold"
-                  android:textSize="18sp"
-                  android:layout_marginTop="20dp"
+                  android:textSize="24sp"
+                  android:layout_marginTop="17dp"
                   android:layout_height="wrap_content"/>
               <TextView
                   android:layout_width="wrap_content"
-                  android:text="124人参与"
+                  android:text="@{gameinfo.result.playCount+@string/main_gameinfo}"
                   android:textSize="9sp"
                   android:layout_marginBottom="7dp"
                   android:layout_centerHorizontal="true"
