@@ -81,5 +81,10 @@
             android:layout_below="@+id/ll_pic"
             android:drawableLeft="@mipmap/quanzi_comment"
             android:layout_height="wrap_content"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_line"/>
     </RelativeLayout>
 </layout>

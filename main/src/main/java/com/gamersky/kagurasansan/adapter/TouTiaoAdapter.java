@@ -6,13 +6,17 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.gamersky.kagurasansan.data.bean.ChannelListData;
 import com.gamersky.kagurasansan.main.R;
 import com.gamersky.kagurasansan.main.databinding.MainItemBannerBinding;
+import com.gamersky.kagurasansan.main.databinding.MainItemLoadBinding;
 import com.gamersky.kagurasansan.main.databinding.MainItemNewsBinding;
 import com.gamersky.kagurasansan.main.databinding.MainItemSantuBinding;
+import com.gamersky.kagurasansan.main.databinding.MainItemTuijianyouxiBinding;
+import com.gamersky.kagurasansan.main.databinding.MainItemZhuantiBinding;
 import com.gamersky.kagurasansan.utils.DateUtils;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -27,18 +31,31 @@ import java.util.List;
  */
 public class TouTiaoAdapter extends RecyclerView.Adapter {
 
-    private List<ChannelListData.ResultBean> data;
     private LayoutInflater inflater;
     private static final int HUANDENG = 0;
     private static final int NEWS = 1;
     private static final int SANTU = 2;
+    private static final int ZHUANTI = 3;
+    private static final int LOAD = 4;
+    private static final int TUIJIANYOUXI = 5;
     private Context mContext;
 
+    private boolean hasMore = false;   //是否有更多数据
+    private boolean fadeTips = false;  //是否隐藏
+    private List<ChannelListData.ResultBean> mData = new ArrayList<>();
+
+
     public void setData(List<ChannelListData.ResultBean> data) {
-        this.data = data;
+        mData.clear();
+        mData.addAll(data);
         notifyDataSetChanged();
     }
 
+
+    public void addData(List<ChannelListData.ResultBean> data) {
+        mData.addAll(data);
+        notifyDataSetChanged();
+    }
     public TouTiaoAdapter(Context context){
         this.mContext = context;
         inflater = LayoutInflater.from(context);
@@ -61,6 +78,18 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
                 MainItemSantuBinding itemSantuBinding = DataBindingUtil.inflate(inflater,R.layout.main_item_santu,viewGroup,false);
                 viewHolder = new SanTuViewHolder(itemSantuBinding);
                 break;
+            case ZHUANTI:
+                MainItemZhuantiBinding itemZhuantiBinding = DataBindingUtil.inflate(inflater,R.layout.main_item_zhuanti,viewGroup,false);
+                viewHolder = new ZhuanTiViewHolder(itemZhuantiBinding);
+                break;
+            case LOAD:
+                MainItemLoadBinding itemLoadBinding = DataBindingUtil.inflate(inflater,R.layout.main_item_load,viewGroup,false);
+                viewHolder = new LoadViewHolder(itemLoadBinding);
+                break;
+            case TUIJIANYOUXI:
+                MainItemTuijianyouxiBinding mainItemTuijianyouxiBinding = DataBindingUtil.inflate(inflater,R.layout.main_item_tuijianyouxi,viewGroup,false);
+                viewHolder = new TuiJianViewHolder(mainItemTuijianyouxiBinding);
+                break;
             default:
                 break;
         }
@@ -70,29 +99,41 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if(getItemViewType(i) == HUANDENG){
-            ((BannerViewHolder)viewHolder).onBind(data.get(i).childElements);
+            ((BannerViewHolder)viewHolder).onBind(mData.get(i).childElements);
         }else if(getItemViewType(i) == NEWS){
-            ((NewsViewHolder)viewHolder).onBind(data.get(i));
+            ((NewsViewHolder)viewHolder).onBind(mData.get(i));
         }else if(getItemViewType(i) == SANTU){
-            ((SanTuViewHolder)viewHolder).onBind(data.get(i));
+            ((SanTuViewHolder)viewHolder).onBind(mData.get(i));
+        }else if(getItemViewType(i) == ZHUANTI){
+            ((ZhuanTiViewHolder)viewHolder).onBind(mData.get(i));
+        }else if(getItemViewType(i) == TUIJIANYOUXI){
+            ((TuiJianViewHolder)viewHolder).onBind(mData.get(i));
+        }else if(getItemViewType(i) == LOAD){
+            ((LoadViewHolder)viewHolder).onBind();
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(data.get(position).type.equals("huandeng")){
+        if(position == getItemCount() - 1){
+            return LOAD;
+        }else if(mData.get(position).type.equals("huandeng")){
             return HUANDENG;
-        }else if(data.get(position).type.equals("xinwen")){
+        }else if(mData.get(position).type.equals("xinwen")){
             return NEWS;
-        }else if(data.get(position).type.equals("santu")){
+        }else if(mData.get(position).type.equals("santu") ||mData.get(position).type.equals("sanTu")  ){
             return SANTU;
+        }else if(mData.get(position).type.equals("zhuanti")){
+            return ZHUANTI;
+        }else if(mData.get(position).type.equals("tuiJianYouXi")){
+            return TUIJIANYOUXI;
         }
         return -1;
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return mData.size() + 1;//空数据布局
     }
 
     public class BannerViewHolder extends RecyclerView.ViewHolder implements OnBannerListener {
@@ -159,6 +200,38 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
 
     }
 
+    public class LoadViewHolder extends RecyclerView.ViewHolder{
+        private MainItemLoadBinding root;
+
+        public LoadViewHolder(MainItemLoadBinding itemView) {
+            super(itemView.getRoot());
+            root = itemView;
+        }
+
+        public void onBind(){
+            if (mData !=null && mData.size() >0 && hasMore) {
+                root.pbBar.setVisibility(View.VISIBLE);
+                root.tvHint.setVisibility(View.VISIBLE);
+                // 不隐藏footView提示
+                fadeTips = false;
+                if (mData != null && mData.size() > 0) {
+                    // 如果查询数据发现增加之后，就显示正在加载更多
+                    root.tvHint.setText("加载中...");
+                }
+            } else {
+                if (mData != null && mData.size() > 0) {
+                    root.pbBar.setVisibility(View.GONE);
+                    root.tvHint.setText("没有更多内容了");
+                    // 将fadeTips设置true
+                    fadeTips = true;
+                    // hasMore设为true是为了让再次拉到底时，会先显示正在加载更多
+                    hasMore = false;
+                }
+            }
+        }
+
+    }
+
 
     public class SanTuViewHolder extends RecyclerView.ViewHolder{
         private MainItemSantuBinding root;
@@ -170,5 +243,53 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
             root.tvPushData.setText(DateUtils.longToDate(data.updateTime));
             root.setData(data);
         }
+    }
+
+    public class ZhuanTiViewHolder extends RecyclerView.ViewHolder{
+        private MainItemZhuantiBinding root;
+        public ZhuanTiViewHolder(MainItemZhuantiBinding itemView) {
+            super(itemView.getRoot());
+            root = itemView;
+        }
+        public void onBind(ChannelListData.ResultBean data){
+            root.tvPushData.setText(DateUtils.longToDate(data.updateTime));
+            root.setData(data);
+        }
+    }
+
+
+    public class TuiJianViewHolder extends RecyclerView.ViewHolder{
+        private MainItemTuijianyouxiBinding root;
+
+        public TuiJianViewHolder(MainItemTuijianyouxiBinding itemView) {
+            super(itemView.getRoot());
+            root = itemView;
+        }
+        public void onBind(ChannelListData.ResultBean data){
+            root.setData(data);
+        }
+    }
+
+    public boolean isFadeTips() {
+        return fadeTips;
+    }
+
+    public void setHasMore(boolean hasMore) {
+        this.hasMore = hasMore;
+        notifyDataSetChanged();
+    }
+
+    public boolean hasMoreEnable(){
+        if(mData != null && mData.size() > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    //是否正在刷新
+    public void setFadeTips(boolean fadeTips) {
+        this.fadeTips = fadeTips;
     }
 }

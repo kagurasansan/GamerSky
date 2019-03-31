@@ -39,7 +39,7 @@ public class ChannelListData extends DataBaseBean {
         public String contentType;
         public int contentId;
         public String title;
-        public Object description;
+        public String description;
         public List<String> thumbnailURLs;
         public Object authorName;
         public Object authorHeadImageURL;

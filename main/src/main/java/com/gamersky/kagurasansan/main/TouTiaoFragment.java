@@ -1,10 +1,13 @@
 package com.gamersky.kagurasansan.main;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.gamersky.kagurasansan.adapter.TouTiaoAdapter;
@@ -23,6 +26,9 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
 
     private MainViewModel mMainViewModel;
     private TouTiaoAdapter mTouTiaoAdapter;
+    private int lastVisibleItem = 0;
+    private LinearLayoutManager mLinearLayoutManager;
+    private int mPage = 1;
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -30,12 +36,35 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mMainViewModel.setNavigator(this);
 
-        mMainViewModel.getMainList("1","20");
+        mMainViewModel.getMainList(String.valueOf(mPage),"20");
         mTouTiaoAdapter = new TouTiaoAdapter(getContext());
-        bindingView.rcData.setLayoutManager(new LinearLayoutManager(getContext()));
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        bindingView.rcData.setLayoutManager(mLinearLayoutManager);
+        bindingView.rcData.setAdapter(mTouTiaoAdapter);
         bindingView.sr.setOnRefreshListener(this);
         //设置圆圈进度条的背景颜色
         bindingView.sr.setColorSchemeResources(R.color.main_red);
+
+        bindingView.sr.setRefreshing(true);
+        bindingView.rcData.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if(!mTouTiaoAdapter.isFadeTips() && lastVisibleItem + 1 == mTouTiaoAdapter.getItemCount() && mTouTiaoAdapter.hasMoreEnable()) {
+                        mTouTiaoAdapter.setFadeTips(true);  //表示正在刷新
+                        mMainViewModel.getMainList(String.valueOf(mPage),"20");
+                    }
+                }
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
+            }
+        });
     }
 
     public static TouTiaoFragment getInstance() {
@@ -51,8 +80,19 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
     @Override
     public void onSuccess(ChannelListData dataBean) {
         bindingView.sr.setRefreshing(false);
-        bindingView.rcData.setAdapter(mTouTiaoAdapter);
-        mTouTiaoAdapter.setData(dataBean.result);
+        if(dataBean != null && dataBean.result != null && dataBean.result.size() > 0){
+            mTouTiaoAdapter.setHasMore(true);
+            mTouTiaoAdapter.setFadeTips(false);
+            if(mPage == 1){
+                mTouTiaoAdapter.setData(dataBean.result);
+            }else{
+                mTouTiaoAdapter.addData(dataBean.result);
+            }
+        }else{
+            mTouTiaoAdapter.setHasMore(false);
+            mTouTiaoAdapter.setFadeTips(false);
+        }
+        mPage ++;
     }
 
     @Override
@@ -63,6 +103,7 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
 
     @Override
     public void onRefresh() {
-        mMainViewModel.getMainList("1","20");
+        mPage = 1;
+        mMainViewModel.getMainList(String.valueOf(mPage),"20");
     }
 }
