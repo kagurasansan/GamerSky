@@ -1,7 +1,7 @@
 package com.gamersky.kagurasansan.utils;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @auther kagurasansan
@@ -10,8 +10,8 @@ import java.util.Date;
  */
 public class DateUtils {
     public static String longToDate(long lo){
-        Date date = new Date(lo);
-        SimpleDateFormat sd = new SimpleDateFormat("HH:mm");
-        return sd.format(date);
+        SimpleDateFormat restlt = new SimpleDateFormat("HH:mm");
+        restlt.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        return restlt.format(lo);
     }
 }

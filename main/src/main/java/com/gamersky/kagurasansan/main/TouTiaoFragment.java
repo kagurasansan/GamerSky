@@ -45,7 +45,7 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
         bindingView.sr.setOnRefreshListener(this);
         //设置圆圈进度条的背景颜色
         bindingView.sr.setColorSchemeResources(R.color.main_red);
-
+        bindingView.rcData.setItemAnimator(null);
         bindingView.rcData.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -89,8 +89,7 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
         if(dataBean != null && dataBean.result != null && dataBean.result.size() > 0){
             mTouTiaoAdapter.setHasMore(true);
             mTouTiaoAdapter.setFadeTips(false);
-            if(mPage == 1){
-                mTouTiaoAdapter.setData(dataBean.result);
+            if(mPage == 1){ mTouTiaoAdapter.setData(dataBean.result);
             }else{
                 mTouTiaoAdapter.addData(dataBean.result);
             }

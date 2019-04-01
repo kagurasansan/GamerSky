@@ -5,9 +5,11 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gamersky.kagurasansan.data.bean.ChannelListData;
@@ -59,8 +61,11 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
 
 
     public void addData(List<ChannelListData.ResultBean> data) {
+        int startPos = mData.size() == 0 ? 0:mData.size() - 1;
+        int itemCount = data.size();
         mData.addAll(data);
-        notifyDataSetChanged();
+        Log.d("xxx",startPos + "::" + itemCount);
+        notifyItemRangeInserted(startPos,itemCount);
     }
     public TouTiaoAdapter(Context context){
         this.mContext = context;
@@ -204,9 +209,9 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
         }
 
         public void onBind(ChannelListData.ResultBean data){
-
             root.tvPushData.setText(DateUtils.longToDate(data.updateTime));
             root.setData(data);
+            root.executePendingBindings();
         }
 
     }
@@ -253,6 +258,7 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
         public void onBind(ChannelListData.ResultBean data){
             root.tvPushData.setText(DateUtils.longToDate(data.updateTime));
             root.setData(data);
+            root.executePendingBindings();
         }
     }
 
@@ -265,6 +271,7 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
         public void onBind(ChannelListData.ResultBean data){
             root.tvPushData.setText(DateUtils.longToDate(data.updateTime));
             root.setData(data);
+            root.executePendingBindings();
         }
     }
 
@@ -283,21 +290,32 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
                 int count = 0;
                 if(gameInfoBean != null && gameInfoBean.result != null){
                     count = gameInfoBean.result.gameTag.size() >= 3 ? 3 : gameInfoBean.result.gameTag.size();
+                    root.llTag.removeAllViews();
+                    for(int i = 0;i < count;i++ ){
+                        TextView textView = getTextView(gameInfoBean.result.gameTag.get(i));
+                        root.llTag.addView(textView);
+                    }
+                    root.setGameinfo(gameInfoBean);
                 }
-                root.llTag.removeAllViews();
-                for(int i = 0;i < count;i++ ){
-                    TextView textView = new TextView(mContext);
-                    textView.setTextSize(9);
-
-                    textView.setText(gameInfoBean.result.gameTag.get(i));
-                    root.llTag.addView(textView);
-                }
-
-                root.setGameinfo(gameInfoBean);
             }
             root.setData(data);
+            root.executePendingBindings();
             mGetGameInterface.getGameData(pos, String.valueOf(data.contentId));
         }
+
+        public TextView getTextView(final String title) {
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            final TextView tv = new TextView(mContext);
+            lp.setMargins(0, 0, 15, 0);
+            tv.setPadding(5, 2, 5, 2);
+            tv.setBackgroundResource(R.drawable.main_bg_tag_game);
+            tv.setTextColor(mContext.getResources().getColor(R.color.main_grey));
+            tv.setLayoutParams(lp);
+            tv.setTextSize(9);
+            tv.setText(title);
+            return tv;
+        }
+
     }
 
     public boolean isFadeTips() {
