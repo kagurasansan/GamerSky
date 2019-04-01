@@ -23,6 +23,7 @@ import com.gamersky.kagurasansan.viewmodel.MainViewModel;
  * @time 2019/3/29.3:37 PM
  * @des ${TODO}
  */
+
 public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> implements MainNavigator,SwipeRefreshLayout.OnRefreshListener{
 
     private MainViewModel mMainViewModel;

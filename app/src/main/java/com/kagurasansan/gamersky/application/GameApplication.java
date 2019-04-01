@@ -30,6 +30,8 @@ public class GameApplication extends BaseApplication {
         HttpHelper.getInstance().init(this);
         ModuleOptions.ModuleBuilder builder = new ModuleOptions.ModuleBuilder(this)
                 .addModule(RouterConstants.MAIN_SPLASH, RouterConstants.MAIN_SPLASH)
+                .addModule(RouterConstants.HOME_MAIN_SERVICE,RouterConstants.HOME_MAIN_SERVICE)
+                .addModule(RouterConstants.FIND_GAME_SERVICE,RouterConstants.FIND_GAME_SERVICE)
                 .addModule(RouterConstants.ZHIHU, RouterConstants.ZHIHU);
         ModuleManager.getInstance().init(builder.build());
     }

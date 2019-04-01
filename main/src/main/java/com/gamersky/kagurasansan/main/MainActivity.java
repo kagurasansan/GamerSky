@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.gamersky.kagurasansan.base.base.BaseActivity;
+import com.gamersky.kagurasansan.base.moduleinterface.module.findgame.FindGameService;
+import com.gamersky.kagurasansan.base.moduleinterface.module.main.MainService;
 import com.gamersky.kagurasansan.base.moduleinterface.route.RouterConstants;
 import com.gamersky.kagurasansan.main.databinding.MainActivityMainBinding;
 
@@ -38,9 +40,9 @@ public class MainActivity extends BaseActivity<MainActivityMainBinding> {
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
             if(i == 0){
-                mFragments.add(MainFragment.getInstance());
-            }else{
-                mFragments.add(SimpleCardFragment.getInstance(mTitles[i]));
+                mFragments.add(MainService.getModule1Frgment());
+            }else if(i == 1){
+                mFragments.add(FindGameService.getFindGameFrgment());
             }
 
         }
