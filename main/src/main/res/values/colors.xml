@@ -1,7 +1,6 @@
 <resources>
-    <color name="main_red">#de2c2c</color>
-    <color name="main_black">#191919</color>
-    <color name="main_grey">#292727</color>
+
+
     <color name="main_grey_shallow">#4b4747</color>
     <color name="main_green">#229e55</color>
 </resources>

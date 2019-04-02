@@ -10,7 +10,7 @@ import com.kagurasansan.gamersky.BuildConfig;
 
 /**
  * @auther kagurasansan
- * @time 2019/3/27.5:06 PM
+ * @time 2019/c/27.5:06 PM
  * @des ${TODO}
  */
 public class GameApplication extends BaseApplication {

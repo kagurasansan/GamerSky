@@ -8,7 +8,7 @@ import gamersky.kagurasansan.com.findgame.R;
 
 /**
  * @auther kagurasansan
- * @time 2019/3/27.4:19 PM
+ * @time 2019/c/27.4:19 PM
  * @des ${TODO}
  */
 public class GameActivity extends AppCompatActivity {

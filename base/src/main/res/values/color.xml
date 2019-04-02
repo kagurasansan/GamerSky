@@ -2,13 +2,18 @@
 <resources>
     <!--通用颜色-->
     <color name="common_color_white">#ffffffff</color>
+    <color name="white">#ffffff</color>
+    <color name="grey_white">#e6e2e2</color>
     <color name="common_color_black">#ff000000</color>
 
     <color name="common_colorPrimary">#3F51B5</color>
     <color name="common_colorPrimaryDark">#303F9F</color>
     <color name="common_colorAccent">#FF4081</color>
-
+    <color name="main_red">#de2c2c</color>
+    <color name="main_black">#191919</color>
+    <color name="main_grey">#292727</color>
     <color name="bg_line">#f4f4f4</color>
+    <color name="gray">#be4a4949</color>
     <color name="item_bg">#f2f2f2</color>
     <color name="item_bg_soild">#f1f1f1</color>
     <color name="item_game_white">#f2f2f2</color>
