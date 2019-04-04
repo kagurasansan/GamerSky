@@ -16,5 +16,7 @@
     <color name="gray">#be4a4949</color>
     <color name="item_bg">#f2f2f2</color>
     <color name="item_bg_soild">#f1f1f1</color>
+    <color name="main_grey_shallow">#4b4747</color>
+    <color name="main_green">#229e55</color>
     <color name="item_game_white">#f2f2f2</color>
 </resources>

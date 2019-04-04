@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">findgame</string>
+    <string name="findgame_countstar">/%s</string>
 </resources>
