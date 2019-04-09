@@ -1,6 +1,7 @@
 package com.gamersky.kagurasansan.main;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,11 +27,25 @@ import com.gamersky.kagurasansan.viewmodel.MainViewModel;
 
 public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> implements MainNavigator,SwipeRefreshLayout.OnRefreshListener{
 
+    private static final String NODEIDS = "NODEIDS";
+    private static final String HUANDENG = "HUANDENG";
     private MainViewModel mMainViewModel;
     private TouTiaoAdapter mTouTiaoAdapter;
     private int lastVisibleItem = 0;
     private LinearLayoutManager mLinearLayoutManager;
     private int mPage = 1;
+    private String nodeIds;
+    private boolean huandeng;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            nodeIds = bundle.getString(NODEIDS);
+            huandeng = bundle.getBoolean(HUANDENG);
+        }
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -38,8 +53,9 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mMainViewModel.setNavigator(this);
 
-        mMainViewModel.getMainList(String.valueOf(mPage),"20");
+        mMainViewModel.getMainList(nodeIds,String.valueOf(mPage),"20");
         mTouTiaoAdapter = new TouTiaoAdapter(getContext());
+        mTouTiaoAdapter.setIsHuandeng(huandeng);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         bindingView.rcData.setLayoutManager(mLinearLayoutManager);
         bindingView.rcData.setAdapter(mTouTiaoAdapter);
@@ -54,7 +70,7 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if(!mTouTiaoAdapter.isFadeTips() && lastVisibleItem + 1 == mTouTiaoAdapter.getItemCount() && mTouTiaoAdapter.hasMoreEnable()) {
                         mTouTiaoAdapter.setFadeTips(true);  //表示正在刷新
-                        mMainViewModel.getMainList(String.valueOf(mPage),"20");
+                        mMainViewModel.getMainList(nodeIds,String.valueOf(mPage),"20");
                     }
                 }
             }
@@ -74,8 +90,12 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
         });
     }
 
-    public static TouTiaoFragment getInstance() {
+    public static TouTiaoFragment getInstance(String nodeIds,boolean isHuanDeng) {
         TouTiaoFragment sf = new TouTiaoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(NODEIDS,nodeIds);
+        bundle.putBoolean(HUANDENG,isHuanDeng);
+        sf.setArguments(bundle);
         return sf;
     }
 
@@ -115,6 +135,6 @@ public class TouTiaoFragment extends BaseFragment<MainFragmentToutiaoBinding> im
     @Override
     public void onRefresh() {
         mPage = 1;
-        mMainViewModel.getMainList(String.valueOf(mPage),"20");
+        mMainViewModel.getMainList(nodeIds,String.valueOf(mPage),"20");
     }
 }

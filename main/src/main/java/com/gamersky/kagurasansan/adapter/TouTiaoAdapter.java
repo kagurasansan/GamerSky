@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +47,7 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
     private boolean fadeTips = false;  //是否隐藏
     private List<ChannelListData.ResultBean> mData = new ArrayList<>();
     private getGameInterface mGetGameInterface;
+    private boolean huandeng;
 
     public void setGetGameInterface(getGameInterface getGameInterface) {
         mGetGameInterface = getGameInterface;
@@ -64,7 +64,6 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
         int startPos = mData.size() == 0 ? 0:mData.size() - 1;
         int itemCount = data.size();
         mData.addAll(data);
-        Log.d("xxx",startPos + "::" + itemCount);
         notifyItemRangeInserted(startPos,itemCount);
     }
     public TouTiaoAdapter(Context context){
@@ -160,29 +159,35 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
                 root = itemView;
             }
             public void onBind(final List<ChannelListData.ResultBean.ChildElementsBean> data){
-                root.banner.setImages(createImgGather(data))
-                        .setDelayTime(5000)
-                        .setBannerStyle(BannerConfig.NOT_INDICATOR)
-                        .setImageLoader(new GlideImageLoader())
-                        .setOnBannerListener(this)
-                        .start();
-                root.tvTitle.setText(data.get(0).title);
-                root.banner.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int i, float v, int i1) {
+                if(huandeng){
+                    root.banner.setImages(createImgGather(data))
+                            .setDelayTime(5000)
+                            .setBannerStyle(BannerConfig.NOT_INDICATOR)
+                            .setImageLoader(new GlideImageLoader())
+                            .setOnBannerListener(this)
+                            .start();
+                    root.tvTitle.setText(data.get(0).title);
+                    root.banner.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int i, float v, int i1) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onPageSelected(int i) {
-                        root.tvTitle.setText(data.get(i).title);
-                    }
+                        @Override
+                        public void onPageSelected(int i) {
+                            root.tvTitle.setText(data.get(i).title);
+                        }
 
-                    @Override
-                    public void onPageScrollStateChanged(int i) {
+                        @Override
+                        public void onPageScrollStateChanged(int i) {
 
-                    }
-                });
+                        }
+                    });
+                }else{
+                    root.banner.setVisibility(View.GONE);
+                    root.tvTitle.setVisibility(View.GONE);
+                }
+
             }
 
             private List<String> createImgGather(List<ChannelListData.ResultBean.ChildElementsBean> data){
@@ -347,5 +352,10 @@ public class TouTiaoAdapter extends RecyclerView.Adapter {
 
     public interface getGameInterface{
         void getGameData(int pos,String gameId);
+    }
+
+
+    public void setIsHuandeng(boolean isHuandeng){
+        huandeng = isHuandeng;
     }
 }

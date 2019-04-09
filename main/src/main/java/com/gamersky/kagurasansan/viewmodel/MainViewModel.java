@@ -18,8 +18,8 @@ public class MainViewModel extends BaseViewModel<MainRepository,MainNavigator> {
         super(application);
     }
 
-    public void getMainList(String pageIndex, String elementsCountPerPage){
-        mRepository.getMainListData(pageIndex,elementsCountPerPage,getNavigator());
+    public void getMainList(String nodeIds,String pageIndex, String elementsCountPerPage){
+        mRepository.getMainListData(nodeIds,pageIndex,elementsCountPerPage,getNavigator());
     }
 
     public void getGameData(int pos,String gameId){

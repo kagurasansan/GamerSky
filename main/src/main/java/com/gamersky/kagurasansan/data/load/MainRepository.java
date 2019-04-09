@@ -22,8 +22,8 @@ public class MainRepository extends AbsRepository {
         mMainApiService = HttpHelper.getInstance().create(MainApiService.class);
     }
 
-    public void getMainListData(String pageIndex, String elementsCountPerPage, final MainNavigator mainNavigator){
-        addDisposable(mMainApiService.getUserBalance("0",pageIndex,elementsCountPerPage,"news","")
+    public void getMainListData(String nodeIds,String pageIndex, String elementsCountPerPage, final MainNavigator mainNavigator){
+        addDisposable(mMainApiService.getUserBalance(nodeIds,pageIndex,elementsCountPerPage,"news","")
                 .compose(new RxSchedulers<ChannelListData>().io_main())
                 .subscribeWith(new RxSubscriber<ChannelListData>( ){
                     @Override

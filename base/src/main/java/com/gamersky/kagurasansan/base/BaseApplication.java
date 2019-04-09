@@ -4,6 +4,7 @@ import android.app.Application;
 
 
 public class BaseApplication extends Application {
+
     private static BaseApplication mBaseApplication;
     @Override
     public void onCreate() {

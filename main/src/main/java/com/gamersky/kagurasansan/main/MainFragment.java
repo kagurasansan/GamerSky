@@ -37,7 +37,21 @@ public class MainFragment extends BaseFragment<MainFragmentMainBinding> {
         showContentView();
         for (int i  = 0;i < mTitles.length;i ++) {
             if(i == 1){
-                mFragments.add(TouTiaoFragment.getInstance());
+                mFragments.add(TouTiaoFragment.getInstance("0",true));
+            }else if(i == 3){
+                mFragments.add(TouTiaoFragment.getInstance("16",false));
+            }else if(i == 4){
+                mFragments.add(TouTiaoFragment.getInstance("19",false));
+            }else if(i == 5){
+                mFragments.add(TouTiaoFragment.getInstance("30",false));
+            }else if(i == 6){
+                mFragments.add(TouTiaoFragment.getInstance("4",false));
+            }else if(i == 7){
+                mFragments.add(TouTiaoFragment.getInstance("31",false));
+            }else if(i == 8){
+                mFragments.add(TouTiaoFragment.getInstance("32",false));
+            }else if(i == 9){
+                mFragments.add(TouTiaoFragment.getInstance("33",false));
             }else{
                 mFragments.add(SimpleCardFragment.getInstance(mTitles[i]));
             }
